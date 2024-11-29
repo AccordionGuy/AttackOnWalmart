@@ -1,3 +1,18 @@
+init python:
+  # Utility functions
+  # =================
+
+  # This function displays quantities of an item 
+  # using the correct singular or plural form
+  # (e.g. "5 cans" or "1 point")
+  def display_quantity(amount, item_name):
+    if amount != 1:
+      noun = f"{item_name}s"
+    else:
+      noun = item_name
+    return f"{amount} {noun}"
+    
+
 # RPG combat stats screen
 # =======================
 screen simple_stats_screen:
@@ -41,23 +56,21 @@ screen simple_stats_screen:
 
         text "[hellcow_health] / [HELLCOW_MAX_HEALTH]" size 16
 
-  text "Florida Man vs. Hellcow" xalign 0.5 yalign 0.05 size 30
-
 
 label start:
+  # Initialization
+  # ==============
+
   # The characters
-  # --------------
   define fm = Character('Florida Man', color="#CD0000")
   define hc = Character('Hellcow', color="#B5B5B5")
 
   # Initial state constants
-  # -----------------------
-  $ HELLCOW_MAX_HEALTH = 10
-  $ FLORIDA_MAN_MAX_HEALTH = 20
-  $ INITIAL_WHITE_CLAW_SUPPLY = 5
+  $ HELLCOW_MAX_HEALTH = 15
+  $ FLORIDA_MAN_MAX_HEALTH = 15
+  $ INITIAL_WHITE_CLAW_SUPPLY = 2
   
   # Initialize game state
-  # ---------------------
   $ hellcow_health = HELLCOW_MAX_HEALTH
   $ florida_man_health = FLORIDA_MAN_MAX_HEALTH
   $ white_claw_supply = INITIAL_WHITE_CLAW_SUPPLY
@@ -90,13 +103,14 @@ show screen simple_stats_screen
 show florida-man at left
 show hellcow at right
 
-#### The game loop.
-# It will exist till one character drops to 0 hp or less.
-#
+# The game loop
+# -------------
+# The "body" of the game, which executes until one of the characters’
+# hit points drops to 0 or less.
 while True:
 
   # Florida Man’s turn
-  # ==================
+  # ------------------
   menu:
     "Attack Hellcow with your shopping cart":
       "You get into position to make your attack."
@@ -109,7 +123,7 @@ while True:
         $ florida_man_damage = renpy.random.randint(1, 4)
         $ hellcow_health -= florida_man_damage
         play audio "music/hadouken.mp3"
-        "You batter Hellcow with your trusty shopping cart, dealing [florida_man_damage] points of damage."
+        "You batter Hellcow with your trusty shopping cart, dealing [display_quantity(florida_man_damage, 'point')] of damage."
 
         if hellcow_health > 0:
           fm "WORLD STAR! WORLD STAR! WORLD STAR!"
@@ -121,16 +135,16 @@ while True:
         "Swing and a miss! Hellcow dodges your attack."
 
     
-    "Drink a White Claw (You’ve got [white_claw_supply] cans remaining)" if white_claw_supply > 0:
+    "Drink a White Claw (You have [display_quantity(white_claw_supply, 'can')])" if white_claw_supply > 0:
       $ health_restored = renpy.random.randint(1, 5)
       $ florida_man_health = min(florida_man_health + health_restored, FLORIDA_MAN_MAX_HEALTH)
       $ white_claw_supply -= 1
       fm "“Ain’t no laws when you’re drinkin’ Claws!!!”"
-      "The nearly taste-free beverage restores [health_restored] points of health."
+      "The nearly taste-free beverage restores [display_quantity(health_restored, 'point')] of health."
 
 
   # Hellcow’s turn
-  # ==============
+  # --------------
   "Hellcow attacks!"
 
   # Hellcow has a 50% chance of hitting Florida Man.
@@ -143,7 +157,7 @@ while True:
 
     play audio "music/moo.mp3"
     hc "Moooo!"
-    "Hellcow strikes you with superbovine strength, delivering [hellcow_damage] points of damage."
+    "Hellcow strikes you with superbovine strength, delivering [display_quantity(hellcow_damage, 'point')] of damage."
 
     if florida_man_health > 0:
       fm "Take THAT, Florida Man!"
@@ -171,7 +185,7 @@ label hellcow_victory:
 
   hc "Another dead hooo-man! HAHAHAHA!!!"
   hc "And I shall bring my Satanic realm to this plane!"
-  "And so Hellcow turned Tampa into a hellscape. Not surprisingly, I-4 looks the same."
+  "And so Hellcow turned Tampa into a hellscape. To nobody’s surprise, I-4 looks exactly the same."
   
   jump end
 
