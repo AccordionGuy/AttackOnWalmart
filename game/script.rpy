@@ -139,6 +139,7 @@ while True:
       $ health_restored = renpy.random.randint(1, 5)
       $ florida_man_health = min(florida_man_health + health_restored, FLORIDA_MAN_MAX_HEALTH)
       $ white_claw_supply -= 1
+      play audio "music/aint-no-laws.mp3"
       fm "“Ain’t no laws when you’re drinkin’ Claws!!!”"
       "The nearly taste-free beverage restores [display_quantity(health_restored, 'point')] of health."
 
@@ -185,7 +186,7 @@ label hellcow_victory:
 
   hc "Another dead hooo-man! HAHAHAHA!!!"
   hc "And I shall bring my Satanic realm to this plane!"
-  "And so Hellcow turned Tampa into a hellscape. To nobody’s surprise, I-4 looks exactly the same."
+  "And so Hellcow turned Florida into a hellscape. To nobody’s surprise, I-4 looks exactly the same."
   
   jump end
 
